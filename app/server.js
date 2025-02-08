@@ -11,6 +11,9 @@ app.use(express.json())
 app.use(cookieParser())
 dotenv.config()
 
+app.use("/test",(req,res)=>{
+    res.send("Hello World!!")
+})
 app.use(authRouter)
 app.use(profileRouter)
 app.use(ConnectionRouter)
