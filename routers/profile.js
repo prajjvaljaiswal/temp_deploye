@@ -1,0 +1,44 @@
+const UserAuth = require("../middleware/UserAuth")
+const express = require("express")
+const User = require("../models/User")
+
+const profileRouter = express.Router()
+
+profileRouter.get("/profile/view/", UserAuth, (req, res) => {
+    try {
+        res.send(req.user)
+    } catch (err) {
+        res.status(400).json({ message: "Error: " + err })
+    }
+})
+
+profileRouter.post("/profile/edit/", UserAuth, async(req, res) => {
+    try {
+        const { firstname, lastname } = req.body
+
+        if(!firstname || !lastname)
+            throw new Error("Fileds are empty!")
+
+        const user = req.user
+        const update = await User.updateOne(user._id,{firstname: firstname, lastname: lastname})
+        res.send("updated")
+    } catch (err) {
+        res.status(400).json({ message: "Error: " + err })
+    }
+})
+
+profileRouter.post("/profile/edit/password/", UserAuth, async(req, res)=>{
+    try {
+        const { password } = req.body
+        if(!password)
+            throw new Error("field is empty!!")
+        const user = req.user
+        const update = await User.updateOne(user._id,{password: password})
+        res.send("password updated")
+
+    } catch (error) {
+        res.status(400).json({ message: "Error: " + err })
+    }
+})
+
+module.exports = profileRouter

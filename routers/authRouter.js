@@ -1,0 +1,59 @@
+const express = require("express")
+const authRouter = express.Router()
+const User = require("../models/User")
+const jwt = require("jsonwebtoken")
+
+authRouter.post("/user/signup", async (req, res) => {
+    try {
+        //{firstname, lastname, email, password}
+        const user = req.body
+
+        //apply validation
+
+        const newUser = await new User(user)
+        await newUser.save()
+        
+        // const token = await jwt.sign({_id: newUser._id},"DevLink")
+        // res.cookie("token", token)
+
+        res.send("Done!")
+        
+    } catch (err) {
+        res.status(400).json({message: "Error: "+err})
+    }
+})
+
+authRouter.post("/user/signin", async (req, res) => {
+    try {
+        const { email, password } = req.body
+        //validation..
+        if (!email || !password)
+            throw new Error("Fields should not be empty!")
+        const user = await User.findOne({ email: email });
+        if (!user)
+            throw new Error("User not found!")
+        if (user.password != password)
+            throw new Error("Password is wrong!")
+
+        const token = await jwt.sign({_id: user._id},"DevLink")
+        // res.cookie("token", token)
+
+        res.send({user,token})
+
+    } catch (err) {
+        res.status(400).json({message: "Error: "+err})
+    }
+})
+
+authRouter.post("/user/logout", (req, res)=>{
+    try {
+        res.cookie("token",null,{
+            expires: new Date(Date.now()),
+        })
+        res.send("Loged out!")
+    } catch (error) {
+        res.status(400).json({message: "Error: "+error})
+    }
+})
+
+module.exports = authRouter 
