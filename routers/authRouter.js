@@ -27,7 +27,7 @@ authRouter.post("/user/signin", async (req, res) => {
     try {
         const { email, password } = req.body
         //validation..
-        console.log("first")
+        // console.log("first")
         if (!email || !password)
             res.json({message: "fields are empty"})
         const user = await User.findOne({ email: email });
