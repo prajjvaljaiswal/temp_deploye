@@ -9,9 +9,9 @@ const UserAuth = async (req, res, next) => {
         if(!req.headers && !req.headers.token)
             throw new Error("Enter token!!")
         
-        const {_id}  = await jwt.verify(token, process.env.JWT_SECRET)
+        // const {_id}  = await jwt.verify(token, process.env.JWT_SECRET)
 
-        const user = await User.findById(_id)
+        const user = await User.findById(token)
 
         if(!user)
             throw new Error("user not found")
