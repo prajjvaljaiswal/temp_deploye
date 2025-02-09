@@ -37,9 +37,7 @@ authRouter.post("/user/signin", async (req, res) => {
 
         const token = await jwt.sign({_id: user._id},"DevLink")
         // res.cookie("token", token)
-
         res.send({user,token})
-
     } catch (err) {
         res.status(400).json({message: "Error: "+err})
     }
