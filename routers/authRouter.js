@@ -27,6 +27,7 @@ authRouter.post("/user/signin", async (req, res) => {
     try {
         const { email, password } = req.body
         //validation..
+        console.log("first")
         if (!email || !password)
             throw new Error("Fields should not be empty!")
         const user = await User.findOne({ email: email });
@@ -34,10 +35,11 @@ authRouter.post("/user/signin", async (req, res) => {
             throw new Error("User not found!")
         if (user.password != password)
             throw new Error("Password is wrong!")
-
+        console.log("second")
         const token = await jwt.sign({_id: user._id},"DevLink")
         // res.cookie("token", token)
-        res.send({user,token})
+        console.log("third")
+        res.send({token})
     } catch (err) {
         res.status(400).json({message: "Error: "+err})
     }
