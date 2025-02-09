@@ -1,16 +1,26 @@
 const express = require("express")
 const app = express()
-const cookieParser = require("cookie-parser")
-const mongoose = require("mongoose")
-const authRouter = require("./routers/authRouter.js")
-const profileRouter = require("./routers/profile.js")
-const ConnectionRouter = require("./routers/connections.js")
+
+const authRouter = require("./routers/authRouter")
+const profileRouter = require("./routers/profile")
+const ConnectionRouter = require("./routers/connections")
 const dotenv = require("dotenv")
-const User = require("./models/User.js")
+const mongoose = require("mongoose")
 
 app.use(express.json())
-app.use(cookieParser())
 dotenv.config()
+
+const connectdb = async ()=>{
+    await mongoose.connect('mongodb+srv://PRAJJVAL:9967138778@namstenode.m3mzr.mongodb.net/DevLink')
+}
+
+try{
+    connectdb()
+    console.log("connected")
+}catch(err){
+    console.log("Error: "+err)
+}
+
 
 app.use("/test",(req,res)=>{
     res.send("Hello World!!")
@@ -30,9 +40,8 @@ app.use(authRouter)
 app.use(profileRouter)
 app.use(ConnectionRouter)
 
-app.listen(5000, async () => {
+app.listen(5000, () => {
     try {
-        await mongoose.connect('mongodb+srv://PRAJJVAL:9967138778@namstenode.m3mzr.mongodb.net/DevLink')
         console.log("Server is online!!!")
     } catch (err) {
         console.log("Error: " + err);
