@@ -23,7 +23,9 @@ try{
 
 
 app.use("/test",(req,res)=>{
-    res.json("Hello World!!")
+    res.json({
+        message:"Hello World"
+    }  )
 })
 
 app.use("/get",async(req,res)=>{
