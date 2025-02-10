@@ -23,7 +23,7 @@ try{
 
 
 app.use("/test",(req,res)=>{
-    res.send("Hello World!!")
+    res.json("Hello World!!")
 })
 
 app.use("/get",async(req,res)=>{
