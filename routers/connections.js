@@ -13,6 +13,9 @@ ConnectionRouter.get("/request/get", UserAuth, async (req, res) => {
                 { toUserId: fromUserId }
             ]
         })
+        .populate({ path: "fromUserId", select: "firstname lastname" })
+        .populate({ path: "toUserId", select: "firstname lastname" })
+        
         if (!connections)
             res.status(404).json({ message: "Requests not found!!" })
         const data = connections.map((connection) => { if (connection.status == "intrested") return connection })
@@ -61,36 +64,37 @@ ConnectionRouter.post("/connection/send/:id/:status", UserAuth, async (req, res)
     }
 })
 
-ConnectionRouter.post("/connection/review/:id/:status", UserAuth, async (req, res)=>{
+ConnectionRouter.post("/connection/review/:id/:status", UserAuth, async (req, res) => {
     try {
-        const {status} = req.params
+        const { status } = req.params
         fromUserId = req.user._id
         toUserId = req.params.id
 
-        const allowedStatus= ["intrested","rejected"]
-        if(!allowedStatus.includes(status))
-            res.status.json({message: "Status is incorrect!"})
+        const allowedStatus = ["intrested", "rejected"]
+        if (!allowedStatus.includes(status))
+            res.status.json({ message: "Status is incorrect!" })
 
         const isUser = User.findById(toUserId)
-        if(!isUser)
-            res.status.json({message: "User not found!!"})
+        if (!isUser)
+            res.status.json({ message: "User not found!!" })
 
         const existConnectionRequest = await Connection.find({
             $or: [
-                { fromUserId: toUserId, toUserId: fromUserId , status: "accepted"},
+                { fromUserId: toUserId, toUserId: fromUserId, status: "accepted" },
+                { fromUserId: toUserId, toUserId: fromUserId, status: "rejected" },
             ],
         });
         if (existConnectionRequest)
             throw new Error("Connection already exist!!")
-        const pendingRequest = await Connection.findOne({fromUserId: toUserId, toUserId: fromUserId, status: "intrested"})
+        const pendingRequest = await Connection.findOne({ fromUserId: toUserId, toUserId: fromUserId, status: "intrested" })
 
         pendingRequest.status = status;
         await pendingRequest.save()
-        res.json({message: "connection updated!!"})
+        res.json({ message: "connection updated!!" })
 
 
     } catch (error) {
-        res.status.json({message: "Error: "+error})
+        res.status.json({ message: "Error: " + error })
     }
 })
 
