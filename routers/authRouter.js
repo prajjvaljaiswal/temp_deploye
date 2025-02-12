@@ -31,10 +31,13 @@ authRouter.post("/user/signin", async (req, res) => {
         if (!email || !password)
             res.json({ message: "fields are empty" })
         const user = await User.findOne({ email: email });
+
         if (!user)
-            res.json({ message: "User not found!" })
+            res.json({ message: "User not found!" });
+
         if (user.password != password)
-            res.json({ message: "password is wrong" })
+            res.json({ message: "password is wrong" });
+        
         const token = await jwt.sign({ _id: user._id }, "DevLink")
         // res.cookie("token", token)
 

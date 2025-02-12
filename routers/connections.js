@@ -16,7 +16,7 @@ ConnectionRouter.get("/request/get", UserAuth, async (req, res) => {
         if (!connections)
             res.status(404).json({ message: "Requests not found!!" })
         const data = connections.map((connection) => { if (connection.status == "intrested") return connection })
-        res.send(data)
+        res.json(data)
     } catch (error) {
         res.status(400).json({ message: "Erroe: " + error })
     }
@@ -54,7 +54,7 @@ ConnectionRouter.post("/connection/send/:id/:status", UserAuth, async (req, res)
 
         const connect = await Connection({ fromUserId: logedInUser, toUserId, status })
         await connect.save()
-        res.json(connect)
+        res.json({ message: "Request sent!!" })
 
     } catch (error) {
         res.status(400).json({ message: "Error: " + error })
@@ -77,13 +77,16 @@ ConnectionRouter.post("/connection/review/:id/:status", UserAuth, async (req, re
 
         const existConnectionRequest = await Connection.find({
             $or: [
-                { fromUserId: toUserId, toUserId: fromUserId }
+                { fromUserId: toUserId, toUserId: fromUserId , status: "accepted"},
             ],
         });
-
         if (existConnectionRequest)
             throw new Error("Connection already exist!!")
+        const pendingRequest = await Connection.findOne({fromUserId: toUserId, toUserId: fromUserId, status: "intrested"})
 
+        pendingRequest.status = status;
+        await pendingRequest.save()
+        res.json({message: "connection updated!!"})
 
 
     } catch (error) {
