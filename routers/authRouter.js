@@ -12,14 +12,14 @@ authRouter.post("/user/signup", async (req, res) => {
 
         const newUser = await new User(user)
         await newUser.save()
-        
+
         // const token = await jwt.sign({_id: newUser._id},"DevLink")
         // res.cookie("token", token)
 
-        res.send("Done!")
-        
+        res.json({ message: "User created successfully!" })
+
     } catch (err) {
-        res.status(400).json({message: "Error: "+err})
+        res.status(400).json({ message: "Error: " + err })
     }
 })
 
@@ -29,30 +29,29 @@ authRouter.post("/user/signin", async (req, res) => {
         //validation..
 
         if (!email || !password)
-            res.json({message: "fields are empty"})
+            res.json({ message: "fields are empty" })
         const user = await User.findOne({ email: email });
         if (!user)
-            res.json({message: "User not found!"})
+            res.json({ message: "User not found!" })
         if (user.password != password)
-            res.json({message: "password is wrong"})
-        const token = await jwt.sign({_id: user._id},"DevLink")
+            res.json({ message: "password is wrong" })
+        const token = await jwt.sign({ _id: user._id }, "DevLink")
         // res.cookie("token", token)
-        
-        console.log("third")
-        res.send({token})
+
+        res.json({ user, token })
     } catch (err) {
-        res.status(400).json({message: "Error: "+err})
+        res.status(400).json({ message: "Error: " + err })
     }
 })
 
-authRouter.post("/user/logout", (req, res)=>{
+authRouter.post("/user/logout", (req, res) => {
     try {
-        res.cookie("token",null,{
+        res.cookie("token", null, {
             expires: new Date(Date.now()),
         })
-        res.send("Loged out!")
+        res.json({ message: "User logged out successfully!" })
     } catch (error) {
-        res.status(400).json({message: "Error: "+error})
+        res.status(400).json({ message: "Error: " + error })
     }
 })
 
