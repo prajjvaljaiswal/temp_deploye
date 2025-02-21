@@ -53,12 +53,13 @@ UserRouter.get("/feed", UserAuth, async (req, res) => {
         .select(USER_SAFE_DATA)
         .skip(skip)
         .limit(limit);
-
+    
       const data = users.map(async(user)=>{
-        await User.findById(user)
+        const data = await User.findById(user)
+        return data;
       })
-      
-      res.json({ data: data });
+
+      res.json({ data: data , users});
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
