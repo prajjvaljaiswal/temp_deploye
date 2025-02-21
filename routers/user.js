@@ -54,10 +54,7 @@ UserRouter.get("/feed", UserAuth, async (req, res) => {
         .skip(skip)
         .limit(limit);
     
-      const data = users.map(async(user)=>{
-        const data = await User.findById(user._id)
-        return data;
-      })
+        const data = await User.find({ _id: { $in: users } });
 
       res.json({ data: data , users});
     } catch (err) {
