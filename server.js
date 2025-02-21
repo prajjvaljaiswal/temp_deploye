@@ -6,6 +6,7 @@ const profileRouter = require("./routers/profile")
 const ConnectionRouter = require("./routers/connections")
 const dotenv = require("dotenv")
 const mongoose = require("mongoose")
+const UserRouter = require("./routers/user")
 
 app.use(express.json())
 dotenv.config()
@@ -41,6 +42,7 @@ app.use("/get",async(req,res)=>{
 app.use(authRouter)
 app.use(profileRouter)
 app.use(ConnectionRouter)
+app.use(UserRouter)
 
 app.listen(5000, () => {
     try {
