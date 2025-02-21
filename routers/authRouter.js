@@ -38,7 +38,7 @@ authRouter.post("/user/signin", async (req, res) => {
         if (user.password != password)
             res.json({ message: "password is wrong" });
         
-        const token = await jwt.sign({ _id: user._id }, "DevLink")
+        const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
         // res.cookie("token", token)
 
         res.json({ user, token })
