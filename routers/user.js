@@ -55,7 +55,7 @@ UserRouter.get("/feed", UserAuth, async (req, res) => {
         .limit(limit);
     
       const data = users.map(async(user)=>{
-        const data = await User.findById(user)
+        const data = await User.findById(user._id)
         return data;
       })
 
