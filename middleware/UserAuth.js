@@ -3,7 +3,7 @@ const User = require("../models/User")
 
 const UserAuth = async (req, res, next) => {
     try {
-        const {token} = await req.headers
+        const {token} = await req.query
         // console.log(token)
         
         if(!req.headers && !req.headers.token)
