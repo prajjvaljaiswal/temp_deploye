@@ -14,32 +14,35 @@ dotenv.config();
 const app = express();
 
 // Connect Database
-connectdb().then(() => console.log("MongoDB Connected")).catch(err => console.log("DB Error: ", err));
+connectdb().then(() => {
+    console.log("MongoDB Connected")
+    // Configure Multer
+    const storage = multer.memoryStorage();
+    const upload = multer({
+        storage,
+        fileFilter: (req, file, cb) => {
+            const allowedTypes = /jpeg|jpg|png/;
+            const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+            const mimetype = allowedTypes.test(file.mimetype);
+            if (extname && mimetype) return cb(null, true);
+            cb(new Error("Only JPEG, JPG, and PNG files are allowed"));
+        },
+    });
 
-// Configure Multer
-const storage = multer.memoryStorage();
-const upload = multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
-        if (extname && mimetype) return cb(null, true);
-        cb(new Error("Only JPEG, JPG, and PNG files are allowed"));
-    },
-});
+    app.post("/upload", upload.single("image"), ImageUrl);
 
-app.post("/upload", upload.single("image"), ImageUrl);
+    app.use(express.json()); // Ensure JSON parsing
+    app.get("/test", (req, res) => {
+        res.json({ message: "Hello World" });
+    });
 
-app.use(express.json()); // Ensure JSON parsing
-app.get("/test", (req, res) => {
-    res.json({ message: "Hello World" });
-});
+    app.use("/api", authRouter);
+    app.use("/api", profileRouter);
+    app.use("/api", ConnectionRouter);
+    app.use("/api", UserRouter);
 
-app.use("/api", authRouter);
-app.use("/api", profileRouter);
-app.use("/api", ConnectionRouter);
-app.use("/api", UserRouter);
+    // Export as a Serverless Function
+    module.exports = app;
+}).catch(err => console.log("DB Error: ", err));
 
-// Export as a Serverless Function
-module.exports = app;
+
