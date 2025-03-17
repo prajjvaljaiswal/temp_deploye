@@ -35,7 +35,7 @@ const upload = multer({
 app.post("/upload", upload.single("image"), ImageUrl);
 
 
-app.use("/api",express.json())
+app.use(express.json())
 
 
 
