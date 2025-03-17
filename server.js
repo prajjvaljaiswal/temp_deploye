@@ -1,19 +1,34 @@
 const express = require("express")
 const app = express()
-
 const authRouter = require("./routers/authRouter")
 const profileRouter = require("./routers/profile")
 const ConnectionRouter = require("./routers/connections")
 const dotenv = require("dotenv")
-const mongoose = require("mongoose")
 const UserRouter = require("./routers/user")
+const connectdb = require("./util/database")
+const multer = require("multer")
+const path = require('path')
+const ImageUrl = require("./middleware/ImageUrl")
 
-app.use(express.json())
+// Configure Multer for file upload
+const storage = multer.memoryStorage();
+const upload = multer({
+    storage,
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        if (extname && mimetype) return cb(null, true);
+        cb(new Error("Only JPEG, JPG, and PNG files are allowed"));
+    },
+});
+
+
+app.post("/upload", upload.single("image"), ImageUrl);
+
+
+app.use("/api",express.json())
 dotenv.config()
-
-const connectdb = async ()=>{
-    await mongoose.connect('mongodb+srv://PRAJJVAL:9967138778@namstenode.m3mzr.mongodb.net/DevLink')
-}
 
 try{
     connectdb()
@@ -29,7 +44,7 @@ app.use("/test",(req,res)=>{
     }  )
 })
 
-app.use("/get",async(req,res)=>{
+app.use("/api/get",async(req,res)=>{
     try {
         const user = await User.findById('67a629603fa94db5d16fc9ef')
         res.send(user)
@@ -39,10 +54,10 @@ app.use("/get",async(req,res)=>{
 })
 
 
-app.use(authRouter)
-app.use(profileRouter)
-app.use(ConnectionRouter)
-app.use(UserRouter)
+app.use("/api",authRouter)
+app.use("/api",profileRouter)
+app.use("/api",ConnectionRouter)
+app.use("/api",UserRouter)
 
 app.listen(5000, () => {
     try {
