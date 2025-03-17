@@ -9,6 +9,14 @@ const connectdb = require("./util/database")
 const multer = require("multer")
 const path = require('path')
 const ImageUrl = require("./middleware/ImageUrl")
+dotenv.config()
+
+try{
+    connectdb()
+    console.log("connected")
+}catch(err){
+    console.log("Error: "+err)
+}
 
 // Configure Multer for file upload
 const storage = multer.memoryStorage();
@@ -28,14 +36,7 @@ app.post("/upload", upload.single("image"), ImageUrl);
 
 
 app.use("/api",express.json())
-dotenv.config()
 
-try{
-    connectdb()
-    console.log("connected")
-}catch(err){
-    console.log("Error: "+err)
-}
 
 
 app.use("/test",(req,res)=>{

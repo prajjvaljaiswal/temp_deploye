@@ -1,5 +1,7 @@
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const s3 = require("../util/awsS3");
+const dotenv = require("dotenv")
+dotenv.config()
 
 const ImageUrl = async(req, res)=>{
     {
