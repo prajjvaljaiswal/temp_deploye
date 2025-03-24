@@ -69,7 +69,7 @@ ConnectionRouter.post("/connection/review/:status/:requestId", UserAuth, async (
         const { status, requestId } = req.params
         logedInUserId = req.user._id
 
-        const allowedStatus = ["intrested", "rejected"]
+        const allowedStatus = ["accepted", "rejected"]
         if (!allowedStatus.includes(status))
             res.status(400).json({ message: "Status is incorrect!" })
         const request = await Connection.findOne({
