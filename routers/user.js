@@ -5,7 +5,7 @@ const User = require("../models/User")
 const Connection = require("../models/Connection")
 const UserAuth = require("../middleware/UserAuth")
 
-const USER_SAFE_DATA = "firstName lastName photoUrl age";
+const USER_SAFE_DATA = "firstname lastname photoURL";
 
 UserRouter.get("/user/request/recived", UserAuth, async(req, res)=>{
     try {
@@ -14,7 +14,9 @@ UserRouter.get("/user/request/recived", UserAuth, async(req, res)=>{
         const requests = await Connection.find({
             toUserId: loggedInUser,
             status: "intrested" 
-        }).populate("fromUserId", USER_SAFE_DATA)
+        })
+        .populate( "fromUserId",  USER_SAFE_DATA )
+        .populate({ path: "toUserId", select: USER_SAFE_DATA })
 
         res.json({
             message: "Data fetched succesfully!!",
