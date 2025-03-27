@@ -12,6 +12,21 @@ profileRouter.get("/profile/view/", UserAuth, (req, res) => {
     }
 })
 
+profileRouter.get("/profile", async(req,res)=>{
+    try {
+        const {id} = req.query
+        if(!id)
+            throw new Error("Id is empty!!")
+        const user = await User.findById( id)
+        if(!user)
+            throw new Error("User not found")
+        res.status(200).json(user)
+    } catch (err) {
+        res.status(400).json({ message: "Error: " + err })
+    }
+})
+
+
 profileRouter.post("/profile/edit/", UserAuth, async(req, res) => {
     try {
         const { firstname, lastname } = req.body

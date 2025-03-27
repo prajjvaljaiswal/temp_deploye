@@ -8,7 +8,7 @@ const UserRouter = require("./routers/user")
 const connectdb = require("./util/database")
 const multer = require("multer")
 const path = require('path')
-const ImageUrl = require("./middleware/ImageUrl")
+const ImageUrl = require("./controllers/ImageUrl")
 dotenv.config()
 
 try{
@@ -32,7 +32,7 @@ const upload = multer({
 });
 
 
-app.post("/upload", upload.single("image"), ImageUrl);
+app.post("/upload/:id", upload.single("image"), ImageUrl);
 
 
 app.use(express.json())

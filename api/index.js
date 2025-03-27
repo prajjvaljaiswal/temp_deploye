@@ -8,11 +8,11 @@ const mongoose = require("mongoose")
 // const connectdb = require("../util/database");
 const multer = require("multer");
 const path = require("path");
-const ImageUrl = require("../middleware/ImageUrl");
+const ImageUrl = require("../controllers/ImageUrl");
 
 dotenv.config();
-
 const app = express();
+
 const connectdb = async ()=>{
     await mongoose.connect(process.env.DB_URI)
 }
@@ -22,6 +22,7 @@ try{
 }catch(err){
     console.log("Error: "+err)
 }
+
 // Configure Multer
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -35,7 +36,7 @@ const upload = multer({
     },
 });
 
-app.post("/upload", upload.single("image"), ImageUrl);
+app.post("/upload/:id", upload.single("image"), ImageUrl);
 
 app.use(express.json()); // Ensure JSON parsing
 app.get("/test", (req, res) => {
