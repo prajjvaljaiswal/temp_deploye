@@ -23,9 +23,9 @@ const ImageUrl = async(req, res)=>{
             await s3.send(new PutObjectCommand(uploadParams));
     
             const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
-
+            
             const user = await User.findById(req.params.id)
-            user.imageUrl = imageUrl
+            user.photoURL = imageUrl
             await user.save()
             
             res.status(200).json({ message: "File uploaded successfully", user });
