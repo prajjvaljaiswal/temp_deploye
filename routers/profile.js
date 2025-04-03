@@ -12,6 +12,19 @@ profileRouter.get("/profile/view/", UserAuth, (req, res) => {
     }
 })
 
+profileRouter.post("/profile/skills/", UserAuth, async(req,res)=>{
+    try {
+        const user = req.user
+        const {skills} = req.body
+        if(!skills)
+            throw new Error("Skills are empty!!")
+        await User.updateOne(user._id,{skills: skills})
+        res.status(200).json({message:"Skills updated!!"})
+    } catch (err) {
+        res.status(400).json({ message: "Error: " + err })
+    }
+})
+
 profileRouter.get("/profile", async(req,res)=>{
     try {
         const {id} = req.query
