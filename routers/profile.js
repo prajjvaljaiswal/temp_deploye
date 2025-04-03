@@ -12,7 +12,7 @@ profileRouter.get("/profile/view/", UserAuth, (req, res) => {
     }
 })
 
-profileRouter.post("/profile/skills/", UserAuth, async(req,res)=>{
+profileRouter.post("/profile/skill", UserAuth, async(req,res)=>{
     try {
         const user = req.user
         const {skills} = req.body
