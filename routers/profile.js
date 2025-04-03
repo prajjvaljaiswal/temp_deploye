@@ -18,7 +18,7 @@ profileRouter.post("/profile/skill", UserAuth, async(req,res)=>{
         const {skills} = req.body
         if(!skills)
             throw new Error("Skills are empty!!")
-        await User.updateOne(user._id,{skills: skills})
+        await User.updateOne({_id:user._id},{skills: skills})
         res.status(200).json({message:"Skills updated!!"})
     } catch (err) {
         res.status(400).json({ message: "Error: " + err })
