@@ -9,14 +9,10 @@ const connectdb = require("./util/database")
 const multer = require("multer")
 const path = require('path')
 const ImageUrl = require("./controllers/ImageUrl")
+const initializeSocket = require("./util/socket")
 dotenv.config()
 
-try{
-    connectdb()
-    console.log("connected")
-}catch(err){
-    console.log("Error: "+err)
-}
+
 
 // Configure Multer for file upload
 const storage = multer.memoryStorage();
@@ -45,25 +41,27 @@ app.use("/test",(req,res)=>{
     }  )
 })
 
-app.use("/api/get",async(req,res)=>{
-    try {
-        const user = await User.findById('67a629603fa94db5d16fc9ef')
-        res.send(user)
-    } catch (error) {
-        res.send(error)
-    }
-})
-
-
 app.use("/api",authRouter)
 app.use("/api",profileRouter)
 app.use("/api",ConnectionRouter)
 app.use("/api",UserRouter)
 
-app.listen(5000, () => {
-    try {
-        console.log("Server is online!!!")
-    } catch (err) {
-        console.log("Error: " + err);
-    }
-})
+const server = require("http").createServer(app)
+initializeSocket(server)
+
+try{
+    connectdb()
+    .then(()=> {
+        server.listen(5000, () => {
+            try {
+                console.log("Server is online!!!")
+            } catch (err) {
+                console.log("Error: " + err);
+            }
+        })
+    })
+    
+}catch(err){
+    console.log("Error: "+err)
+}
+
