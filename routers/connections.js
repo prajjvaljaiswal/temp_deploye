@@ -4,26 +4,27 @@ const Connection = require("../models/Connection")
 const User = require("../models/User")
 const ConnectionRouter = express.Router()
 
-// ConnectionRouter.get("/request/get", UserAuth, async (req, res) => {
-//     try {
-//         const fromUserId = req.user._id
-//         const connections = await Connection.find({
-//             $or: [
-//                 { fromUserId },
-//                 { toUserId: fromUserId }
-//             ]
-//         })
-//         .populate({ path: "fromUserId", select: "firstname lastname" })
-//         .populate({ path: "toUserId", select: "firstname lastname" })
+ConnectionRouter.get("/request/get", UserAuth, async (req, res) => {
+    try {
+        const fromUserId = req.user._id
+        const connections = await Connection.find({
+            $or: [
+                { fromUserId },
+                { toUserId: fromUserId }
+            ],
+            status: "accepted"
+        })
+        .populate({ path: "fromUserId", select: "firstname lastname" })
+        .populate({ path: "toUserId", select: "firstname lastname" })
         
-//         if (!connections)
-//             res.status(404).json({ message: "Requests not found!!" })
-//         const data = connections.map((connection) => { if (connection.status == "intrested") return connection })
-//         res.json(data)
-//     } catch (error) {
-//         res.status(400).json({ message: "Erroe: " + error })
-//     }
-// })
+        if (!connections)
+            res.status(404).json({ message: "Connection not found!!" })
+        // const data = connections.map((connection) => { if (connection.status == "intrested") return connection })
+        res.json(connections)
+    } catch (error) {
+        res.status(400).json({ message: "Erroe: " + error })
+    }
+})
 
 ConnectionRouter.post("/connection/send/:id/:status", UserAuth, async (req, res) => {
     try {

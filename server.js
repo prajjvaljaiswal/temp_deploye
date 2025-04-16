@@ -52,7 +52,7 @@ initializeSocket(server)
 try{
     connectdb()
     .then(()=> {
-        server.listen(5000, () => {
+        server.listen(3000, () => {
             try {
                 console.log("Server is online!!!")
             } catch (err) {
