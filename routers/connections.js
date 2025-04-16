@@ -2,6 +2,7 @@ const express = require("express")
 const UserAuth = require("../middleware/UserAuth")
 const Connection = require("../models/Connection")
 const User = require("../models/User")
+const { connection } = require("mongoose")
 const ConnectionRouter = express.Router()
 
 const USER_SAFE_DATA = "firstname lastname photoURL skills";
@@ -22,7 +23,15 @@ ConnectionRouter.get("/request/get", UserAuth, async (req, res) => {
         if (!connections)
             res.status(404).json({ message: "Connection not found!!" })
         // const data = connections.map((connection) => { if (connection.status == "intrested") return connection })
-        res.json(connections)
+        const users = connections.map((connection)=>{
+            if(connection.fromUserId._id == fromUserId){
+                return connection.toUserId
+            }
+            else{
+                return connection.fromUserId
+            }
+        })
+        res.json(users)
     } catch (error) {
         res.status(400).json({ message: "Erroe: " + error })
     }
