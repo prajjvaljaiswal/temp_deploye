@@ -3,6 +3,8 @@ const authRouter = express.Router()
 const User = require("../models/User")
 const jwt = require("jsonwebtoken")
 
+
+
 authRouter.post("/user/signup", async (req, res) => {
     try {
         //{firstname, lastname, email, password}

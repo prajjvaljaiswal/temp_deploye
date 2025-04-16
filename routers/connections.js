@@ -4,6 +4,8 @@ const Connection = require("../models/Connection")
 const User = require("../models/User")
 const ConnectionRouter = express.Router()
 
+const USER_SAFE_DATA = "firstname lastname photoURL skills";
+
 ConnectionRouter.get("/request/get", UserAuth, async (req, res) => {
     try {
         const fromUserId = req.user._id
@@ -14,8 +16,8 @@ ConnectionRouter.get("/request/get", UserAuth, async (req, res) => {
             ],
             status: "accepted"
         })
-        .populate({ path: "fromUserId", select: "firstname lastname" })
-        .populate({ path: "toUserId", select: "firstname lastname" })
+        .populate({ path: "fromUserId", select: USER_SAFE_DATA})
+        .populate({ path: "toUserId", select: USER_SAFE_DATA })
         
         if (!connections)
             res.status(404).json({ message: "Connection not found!!" })
