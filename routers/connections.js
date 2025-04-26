@@ -24,7 +24,7 @@ ConnectionRouter.get("/request/get", UserAuth, async (req, res) => {
             res.status(404).json({ message: "Connection not found!!" })
         // const data = connections.map((connection) => { if (connection.status == "intrested") return connection })
         const users = connections.map((connection)=>{
-            if(connection.toUserId._id == fromUserId){
+            if(connection.fromUserId._id.toString() == fromUserId.toString()){
                 return connection.toUserId
             }
             else{
