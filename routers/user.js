@@ -4,6 +4,7 @@ const UserRouter = express.Router()
 const User = require("../models/User")
 const Connection = require("../models/Connection")
 const UserAuth = require("../middleware/UserAuth")
+const { Chat } = require("../models/Chat")
 
 const USER_SAFE_DATA = "firstname lastname photoURL skills";
 
@@ -24,6 +25,29 @@ UserRouter.get("/user/request/recived", UserAuth, async (req, res) => {
     })
   } catch (error) {
     res.status(400).json({ message: "Error :" + error })
+  }
+})
+
+UserRouter.get("/user/chat", UserAuth, async (req, res)=>{
+  try {
+    const toUserId = req.query.toUserId;
+    const loggedInUser = req.user._id;
+    if(!toUserId){
+      throw new Error("User id is required!!")
+    }
+    const chats = await Chat.findOne({
+      participants: { $all: [loggedInUser, toUserId]}
+    })
+    // .populate({path: "messages", select: "senderId text createdAt"})
+
+    if(!chats){
+      throw new Error("Chat is Empty!!")
+    }
+
+    res.status(200).json({chats: chats.messages})
+
+  } catch (error) {
+    res.status(400).json({message: "Error: "+ error})
   }
 })
 
