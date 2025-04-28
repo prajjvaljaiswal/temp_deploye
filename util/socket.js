@@ -34,7 +34,7 @@ const initializeSocket = (server) => {
           // TODO: Check if userId & targetUserId are friends
 
           let chat = await Chat.findOne({
-            participants: { $all: [userId, targetUserId] },
+            participants: { $all: [userId, targetUserId] }, 
           });
 
           if (!chat) {
